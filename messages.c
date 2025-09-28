@@ -38,10 +38,20 @@ bool read_hello_reply_message(const uint8_t *buffer, const network_info *net, co
 
     size_t pos = 1;
     // Get the number of peers included in this message
-    msg->count = ntohs(*(uint16_t*)(buffer + pos));
+    const uint16_t peer_count = ntohs(*(uint16_t*)(buffer + pos));
     pos += 2;
 
-    for (int i = 0; i < msg->count; i++) {
+    if (peer_count > MAX_CONTACTS)
+        return false;
+
+    const size_t remaining = len - pos;
+    const size_t max_contacts_by_size = remaining / 7; // each contact uses 7 bytes
+    if (peer_count > max_contacts_by_size)
+        return false;
+
+    msg->count = peer_count;
+
+    for (uint16_t i = 0; i < msg->count; i++) {
         if (pos >= len) return false;
         pos = read_addr(buffer, pos, &msg->contacts[i]);
 
