@@ -22,7 +22,7 @@ struct sockaddr_in new_address(const uint16_t port, const char *address) {
 // Function to check if an address is one of our local addresses
 bool is_own_address(const network_info *net, const struct sockaddr_in *addr) {
     // First check if it matches our bound address - compare in host byte order
-    if (ntohs(net->my_addr.sin_port) == addr->sin_port) {
+    if (ntohs(net->my_addr.sin_port) == ntohs(addr->sin_port)) {
         // If we bound to INADDR_ANY (0.0.0.0), check all interfaces
         // This is important because when binding to INADDR_ANY, we need to
         // compare against all local IPs to avoid talking to ourselves
@@ -175,4 +175,3 @@ ssize_t receive_message(network_info *net, struct sockaddr_in *src_addr) {
 
     return received;
 }
-
