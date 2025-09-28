@@ -1,0 +1,6 @@
+# Build artifacts
+*.o
+peer-time-sync
+
+# IDE metadata
+.idea/
